@@ -1,0 +1,52 @@
+
+/* The most populous 5 countries */
+SELECT name, population FROM countries ORDER BY population DESC LIMIT 5;
+
+/* The least populous 5 countries */
+SELECT name, population FROM countries ORDER BY population LIMIT 5;
+
+/* How much of the world's total population is made up of the most 5 populous countries? */
+
+WITH top_5 AS
+    (SELECT name, population, percent_of_world_pop FROM countries
+        ORDER BY population DESC LIMIT 5)
+    SELECT sum(percent_of_world_pop) AS "Percentage of World Population by Top 5 Most Populous Countries" from top_5;
+
+/* Number of countries in the list */
+
+SELECT COUNT(name) AS "Number of Countries" FROM countries;
+
+/* Top 5 Most Fertile Countries */
+SELECT name, fertility_rate FROM countries ORDER BY fertility_rate DESC LIMIT 5;
+
+/* Top 5 Least Fertile Countries */
+SELECT name, fertility_rate FROM countries ORDER BY fertility_rate LIMIT 5;
+
+SELECT COUNT(*), SUM(population)/1000000 AS "population_millions", round(SUM(percent_of_world_pop),2),
+    CASE
+        WHEN fertility_rate > 5 THEN "very high fertility"
+        WHEN fertility_rate > 3 THEN "high fertility"
+        WHEN fertility_rate > 2 THEN "medium fertility"
+        ELSE "low fertility"
+    END AS "fertility_level"
+FROM countries
+GROUP BY fertility_level;
+
+SELECT COUNT(*),  round(SUM(percent_of_world_pop),2) AS "percentage_of_world_pop", AVG(density_per_sq_km) AS "population_density",
+    CASE
+        WHEN fertility_rate >= 5 THEN "very high fertility"
+        WHEN fertility_rate >= 3 THEN "high fertility"
+        WHEN fertility_rate >= 2 THEN "medium fertility"
+        ELSE "low fertility"
+    END AS "fertility_level"
+FROM countries
+GROUP BY fertility_level;
+
+/* Top 5 most fertile countries, pop density */
+
+SELECT name, density_per_sq_km, fertility_rate FROM countries ORDER BY fertility_rate DESC LIMIT 5;
+
+
+/* Top 5 least fertile countries, pop density */
+    
+SELECT name, density_per_sq_km, fertility_rate FROM countries ORDER BY fertility_rate LIMIT 5
